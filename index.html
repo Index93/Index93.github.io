@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Preprost Klient</title>
+</head>
+<body>
+    <h1>Preprost Klient</h1>
+
+    <button id="sendRequest">Pošlji Zahtevo na Strežnik</button>
+
+    <div id="response"></div>
+
+    <script>
+        // Funkcija za pošiljanje zahteve na strežnik
+        function sendRequest() {
+            fetch('http://localhost:8080', {
+                method: 'GET'
+            })
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('response').innerHTML = data;
+            })
+            .catch(error => {
+                console.error('Napaka pri pošiljanju zahteve:', error);
+            });
+        }
+
+        // Poslušanje na klik gumba
+        document.getElementById('sendRequest').addEventListener('click', sendRequest);
+    </script>
+</body>
+</html>
