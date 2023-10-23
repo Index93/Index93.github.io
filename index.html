@@ -1,30 +1,44 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>GET Request Example</title>
+    <title>GitHub API Fetch</title>
 </head>
 <body>
-    <h1>GET Request Example</h1>
-    <button id="getDataButton">Get Data</button>
-    <div id="dataContainer"></div>
+    <h1>Pridobi podatke iz GitHub repozitorija</h1>
+    <button id="fetchButton">Pridobi podatke</button>
+    <pre id="output"></pre>
 
     <script>
-        document.getElementById('getDataButton').addEventListener('click', function () {
-            // Send a GET request to your server
-            fetch('http://77.38.70.243:443')
-                .then(function (response) {
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok');
+        const authToken = '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';
+        const owner = 'Index93';
+        const repo = 'produkti';
+        const path = 'prodaja.json';
+
+        const fetchButton = document.getElementById('fetchButton');
+        const output = document.getElementById('output');
+
+        fetchButton.addEventListener('click', () => {
+            const headers = new Headers({
+                'Authorization': `Bearer ${authToken}`,
+            });
+
+            fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${path}`, {
+                method: 'GET',
+                headers: headers,
+            })
+                .then(response => {
+                    if (response.ok) {
+                        return response.json();
+                    } else {
+                        throw new Error('Ne morem pridobiti vsebine datoteke.');
                     }
-                    return response.json();
                 })
-                .then(function (data) {
-                    // Display the data in the dataContainer div
-                    var dataContainer = document.getElementById('dataContainer');
-                    dataContainer.innerHTML = JSON.stringify(data, null, 2); // You can format the data as needed
+                .then(data => {
+                    const content = atob(data.content); // Dekodiramo vsebino iz base64
+                    output.textContent = content;
                 })
-                .catch(function (error) {
-                    console.error('Error:', error);
+                .catch(error => {
+                    output.textContent = 'Napaka pri pridobivanju podatkov: ' + error;
                 });
         });
     </script>
